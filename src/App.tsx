@@ -54,7 +54,7 @@ const initialNodes: Node[] = [
     position: { x: 0, y: 0 },
     type: "dataSchema",
     data: {
-      label: "Ammonia Transportation and Distribution",
+      label: "Ammonia from H2 from Coal Gasification w/ CC S",
       details: "Life Cycle Assessment of Corn based Butanol as a transportation fuel",
       bgColor: "#bfdbff",
       schema: {

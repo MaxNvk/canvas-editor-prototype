@@ -1,10 +1,10 @@
-import { memo, PropsWithChildren, ReactNode } from "react";
+import {memo, PropsWithChildren, ReactNode, useState} from "react";
 import { BaseNode } from "@/components/flow/base-node";
 import { Position } from "@xyflow/react";
 import dayjs from 'dayjs';
 import { BaseHandle } from "@/components/flow/base-handle.tsx";
 import { cn } from "@/lib/utils.ts";
-import { ArrowRightSquareIcon } from "lucide-react";
+import { ArrowRightSquareIcon, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 
 
 /* DATA SCHEMA NODE HEADER ------------------------------------------------ */
@@ -33,9 +33,9 @@ export const DataSchemaNodeDate = ({ children }: PropsWithChildren) => {
  * A container for the data schema node body that wraps the table.
  */
 
-const DataSchemaNodeBody = ({ children }: PropsWithChildren) => {
+const DataSchemaNodeBody = ({ children, hidden }: PropsWithChildren & { hidden?: boolean }) => {
   return (
-    <div className="grid grid-cols-2 items-start gap-x-1.5 px-2">
+    <div className={cn("grid grid-cols-2 items-start gap-x-1.5 px-2", hidden ? "absolute h-0 overflow-hidden scale-y-0 top-1/2 transform -translate-y-1/2 pointer-events-none select-none" : "")}>
       {children}
     </div>
   )
@@ -126,7 +126,7 @@ export const DataSchemaNode = ({
   style
 }: DataSchemaNodeProps) => {
   return (
-    <BaseNode className={cn(className)} selected={selected} style={style}>
+    <BaseNode className={cn("relative", className)} selected={selected} style={style}>
       {children}
     </BaseNode>
   );
@@ -154,15 +154,22 @@ export type DataSchemaNodeData = {
 
 export const DataSchemaNodeMemo = memo(({data, selected}: DataSchemaNodeData) => {
   const formattedDate = dayjs(data.lastUpdated).format("M/DD/YYYY - HH:MM");
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
     <DataSchemaNode className="p-0" selected={selected} style={{backgroundColor: data.bgColor}}>
-      <div className="px-2 py-1.5">
-        <DataSchemaNodeHeader>{data.label}</DataSchemaNodeHeader>
-        <DataSchemaNodeDate>Last updated: {formattedDate}</DataSchemaNodeDate>
+      <div className="relative flex items-start px-2 py-1.5">
+        <div className="mr-auto">
+          <DataSchemaNodeHeader>{data.label}</DataSchemaNodeHeader>
+          <DataSchemaNodeDate>Last updated: {formattedDate}</DataSchemaNodeDate>
+        </div>
+
+        <button onClick={() => setIsCollapsed(!isCollapsed)} className="ml-4 cursor-pointer">
+          {isCollapsed ? <ArrowDownCircle /> : <ArrowUpCircle />}
+        </button>
       </div>
 
-      <DataSchemaNodeBody>
+      <DataSchemaNodeBody hidden={isCollapsed}>
         <DataSchemaNodeTable>
           <DataSchemaNodeTableHead>Inputs</DataSchemaNodeTableHead>
 
@@ -171,6 +178,7 @@ export const DataSchemaNodeMemo = memo(({data, selected}: DataSchemaNodeData) =>
               <DataSchemaTableCell className="pl-0 font-light w-full">
                 <BaseHandle
                   id={entry.title} position={Position.Left} type="target"
+                  isConnectable={!isCollapsed}
                 />
 
                 <p className="font-bold">{entry.title}</p>
@@ -199,6 +207,7 @@ export const DataSchemaNodeMemo = memo(({data, selected}: DataSchemaNodeData) =>
 
                 <BaseHandle
                   id={entry.title} position={Position.Right} type="source"
+                  isConnectable={!isCollapsed}
                 />
               </DataSchemaTableCell>
             </DataSchemaTableRow>
