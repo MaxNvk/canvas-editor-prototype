@@ -2,7 +2,6 @@ import { forwardRef } from "react";
 import { Maximize, Minus, Plus } from "lucide-react";
 
 import {
-  Panel,
   useViewport,
   useStore,
   useReactFlow,
@@ -29,50 +28,53 @@ export const ZoomSlider = forwardRef<
   );
 
   return (
-    <Panel
+    <div
       className={cn(
-        "flex gap-1 rounded-md bg-primary-foreground p-1 text-foreground",
+        "flex flex-col pt-2 gap-1 text-foreground",
         className,
       )}
       {...props}
     >
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => zoomOut({ duration: 300 })}
-      >
-        <Minus className="h-4 w-4" />
-      </Button>
       <Slider
-        className="w-[140px]"
+        className="w-[200px]"
         value={[zoom]}
         min={minZoom}
         max={maxZoom}
         step={0.01}
         onValueChange={(values) => zoomTo(values[0])}
       />
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => zoomIn({ duration: 300 })}
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
-      <Button
-        className="min-w-20 tabular-nums"
-        variant="ghost"
-        onClick={() => zoomTo(1, { duration: 300 })}
-      >
-        {(100 * zoom).toFixed(0)}%
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => fitView({ duration: 300 })}
-      >
-        <Maximize className="h-4 w-4" />
-      </Button>
-    </Panel>
+
+      <div className="flex gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => zoomOut({ duration: 300 })}
+        >
+          <Minus className="h-4 w-4" />
+        </Button>
+        <Button
+          className="min-w-20 tabular-nums"
+          variant="ghost"
+          onClick={() => zoomTo(1, { duration: 300 })}
+        >
+          {(100 * zoom).toFixed(0)}%
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => zoomIn({ duration: 300 })}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => fitView({ duration: 300 })}
+        >
+          <Maximize className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
   );
 });
 
