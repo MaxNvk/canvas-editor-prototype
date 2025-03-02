@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export const ZoomSlider = forwardRef<
   HTMLDivElement,
   Omit<PanelProps, "children">
->(({ className, ...props }) => {
+>(({ className, ...props }, _ref) => {
   const { zoom } = useViewport();
   const { zoomTo, zoomIn, zoomOut, fitView } = useReactFlow();
 

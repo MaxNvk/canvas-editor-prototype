@@ -43,6 +43,7 @@ const RAW_RUNTIME_STATE =
           ["autoprefixer", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:10.4.20"],\
           ["class-variance-authority", "npm:0.7.1"],\
           ["clsx", "npm:2.1.1"],\
+          ["dayjs", "npm:1.11.13"],\
           ["eslint", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:9.21.0"],\
           ["eslint-plugin-react-hooks", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:5.2.0"],\
           ["eslint-plugin-react-refresh", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:0.4.19"],\
@@ -2761,6 +2762,7 @@ const RAW_RUNTIME_STATE =
           ["autoprefixer", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:10.4.20"],\
           ["class-variance-authority", "npm:0.7.1"],\
           ["clsx", "npm:2.1.1"],\
+          ["dayjs", "npm:1.11.13"],\
           ["eslint", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:9.21.0"],\
           ["eslint-plugin-react-hooks", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:5.2.0"],\
           ["eslint-plugin-react-refresh", "virtual:eb21d40ece2cc9ab5ce0a96950cf20736e8dd06bd9a8ee8593d9d227817af66c55de844f70397255f4ac12cbefea766c9a222d67b4225eca905eba8d97f0641a#npm:0.4.19"],\
@@ -2999,6 +3001,15 @@ const RAW_RUNTIME_STATE =
           ["d3-interpolate", "npm:3.0.1"],\
           ["d3-selection", "npm:3.0.0"],\
           ["d3-transition", "virtual:18f706a42193e946c94fed31b041c1b3edf9dd829f726f09bd72737237836e0ad63cc96e0c6dabb6f7524017d4f379a5cadf8ea3af18ef71d652dae3788717b9#npm:3.0.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["dayjs", [\
+      ["npm:1.11.13", {\
+        "packageLocation": "../../../.yarn/berry/cache/dayjs-npm-1.11.13-d478bb9479-10c0.zip/node_modules/dayjs/",\
+        "packageDependencies": [\
+          ["dayjs", "npm:1.11.13"]\
         ],\
         "linkType": "HARD"\
       }]\

@@ -1,8 +1,8 @@
-import React, { forwardRef, HTMLAttributes } from "react";
+import { forwardRef, HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { HandleProps } from "@xyflow/react";
 
-import { BaseHandle } from "@/components/base-handle";
+import { BaseHandle } from "@/components/flow/base-handle";
 
 const flexDirections = {
   top: "flex-col",
@@ -34,6 +34,7 @@ export const LabeledHandle = forwardRef<
       )}
     >
       <BaseHandle position={position} className={handleClassName} {...props} />
+
       <label className={cn("px-3 text-foreground", labelClassName)}>
         {title}
       </label>

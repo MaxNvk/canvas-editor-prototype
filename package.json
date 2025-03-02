@@ -21,6 +21,7 @@
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "lucide-react": "^0.477.0",
     "postcss": "^8.5.3",
     "postcss-import": "^16.1.0",
