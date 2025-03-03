@@ -1,48 +1,9 @@
 import '@xyflow/react/dist/style.css';
-import {Background, Node, OnConnect, ReactFlow, useEdgesState, useNodesState, addEdge, MiniMap} from '@xyflow/react';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger
-} from '@/components/ui/sidebar';
-import { ZoomIn } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu.tsx";
-import { ZoomSlider } from "@/components/flow/zoom-slider.tsx";
+import { Background, Node, ReactFlow, MiniMap } from '@xyflow/react';
 import { DataSchemaNodeMemo } from "@/components/flow/data-schema-node.tsx";
-import { useCallback } from "react";
-
-function CanvasSidebar() {
-  return (
-    <SidebarProvider>
-      <Sidebar variant="floating">
-        <SidebarContent className="pt-10 pb-1.5">
-          <SidebarMenu className="px-2">
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <ZoomIn className="block mx-auto w-5" />
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="start" alignOffset={40} className="-translate-y-10 translate-x-3">
-                    <ZoomSlider className="relative m-0" />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-      </Sidebar>
-
-      <SidebarTrigger className="absolute z-10 top-4 left-[1.125rem]" variant="outline" />
-    </SidebarProvider>
-  )
-}
+import { useCallback, useEffect, useRef } from "react";
+import { useFlowHistory } from "@/hooks/use-flow-history.ts";
+import { CanvasSidebar } from "@/components/CanvasSidebar.tsx";
 
 const nodeTypes = {
   dataSchema: DataSchemaNodeMemo,
@@ -134,30 +95,80 @@ const initialNodes: Node[] = [
 ];
 
 function App() {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    undo,
+    redo,
+    canRedo,
+    canUndo
+  } = useFlowHistory(initialNodes, [], 80);
 
-  const onConnect: OnConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [],
-  );
+  // Define throttled key handler for better performance
+  const lastKeyTime = useRef(0);
+  const onKeyDown = useCallback((event) => {
+    // Throttle keyboard input to prevent rapid-fire undo/redo
+    const now = Date.now();
+    if (now - lastKeyTime.current < 100) return;
+    lastKeyTime.current = now;
+
+    if ((event.metaKey || event.ctrlKey) && event.key === 'z') {
+      if (!event.shiftKey) {
+        event.preventDefault();
+        undo();
+      } else {
+        event.preventDefault();
+        redo();
+      }
+    } else if ((event.metaKey || event.ctrlKey) && event.key === 'y') {
+      event.preventDefault();
+      redo();
+    }
+  }, [undo, redo]);
+
+  // Set up keyboard event listener with cleanup
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onKeyDown]);
+
+  const onExpandClick = () => {
+    console.log("Expand")
+  }
+
+  const onShrinkClick = () => {
+    console.log("Shrink")
+  }
 
   return (
     <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onConnect={onConnect}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          nodeTypes={nodeTypes}
-          fitView
-          className="p-2"
-        >
-          <CanvasSidebar />
-          <Background size={3} />
-          <MiniMap />
-        </ReactFlow>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        fitView
+        nodesDraggable
+        elementsSelectable
+      >
+        <CanvasSidebar
+          canRedo={canRedo}
+          canUndo={canUndo}
+          onRedoClick={redo}
+          onUndoClick={undo}
+          onExpandClick={onExpandClick}
+          onShrinkClick={onShrinkClick}
+        />
+        <Background size={3} />
+        <MiniMap />
+      </ReactFlow>
     </div>
   );
 }
