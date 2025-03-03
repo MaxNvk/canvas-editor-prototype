@@ -47,7 +47,7 @@ export function CanvasSidebar({ canRedo, canUndo, onUndoClick, onRedoClick }: IP
             <SidebarMenuItem title="Zoom">
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <ZoomIn className="block mx-auto w-5" />
+                  <ZoomIn className="block mx-auto" />
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="start" alignOffset={40} className="-translate-y-10 translate-x-3">
