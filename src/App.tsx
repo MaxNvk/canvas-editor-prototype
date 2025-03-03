@@ -18,6 +18,7 @@ const initialNodes: Node[] = [
       label: "Ammonia from H2 from Coal Gasification w/ CC S",
       details: "Life Cycle Assessment of Corn based Butanol as a transportation fuel",
       bgColor: "#bfdbff",
+      isExpanded: true,
       schema: {
         input: [
           {
@@ -57,6 +58,7 @@ const initialNodes: Node[] = [
       label: "Ammonia Transportation and Distribution",
       details: "Analysis of Petroleum Refining",
       bgColor: "#ffe54e",
+      isExpanded: true,
       schema: {
         input: [
           {
@@ -137,14 +139,6 @@ function App() {
     };
   }, [onKeyDown]);
 
-  const onExpandClick = () => {
-    console.log("Expand")
-  }
-
-  const onShrinkClick = () => {
-    console.log("Shrink")
-  }
-
   return (
     <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
       <ReactFlow
@@ -163,8 +157,6 @@ function App() {
           canUndo={canUndo}
           onRedoClick={redo}
           onUndoClick={undo}
-          onExpandClick={onExpandClick}
-          onShrinkClick={onShrinkClick}
         />
         <Background size={3} />
         <MiniMap />

@@ -1,6 +1,6 @@
-import {memo, PropsWithChildren, ReactNode, useState} from "react";
+import { JSX, memo, PropsWithChildren, ReactNode, useCallback } from "react";
 import { BaseNode } from "@/components/flow/base-node";
-import { Position } from "@xyflow/react";
+import { Position, useReactFlow } from "@xyflow/react";
 import dayjs from 'dayjs';
 import { BaseHandle } from "@/components/flow/base-handle.tsx";
 import { cn } from "@/lib/utils.ts";
@@ -139,8 +139,10 @@ type DataSchemaItem = {
 }
 
 export type DataSchemaNodeData = {
+  id: string;
   selected?: boolean;
   data: {
+    isExpanded?: boolean;
     label: string;
     details?: string;
     lastUpdated: string;
@@ -152,9 +154,13 @@ export type DataSchemaNodeData = {
   };
 };
 
-export const DataSchemaNodeMemo = memo(({data, selected}: DataSchemaNodeData) => {
+export const DataSchemaNodeMemo = memo(({ data, selected, id }: DataSchemaNodeData): JSX.Element => {
   const formattedDate = dayjs(data.lastUpdated).format("M/DD/YYYY - HH:MM");
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const reactFlow = useReactFlow();
+
+  const toggleExpanded = useCallback(() => {
+    reactFlow.updateNodeData(id, {isExpanded: !data.isExpanded})
+  }, [data])
 
   return (
     <DataSchemaNode className="p-0" selected={selected} style={{backgroundColor: data.bgColor}}>
@@ -164,12 +170,12 @@ export const DataSchemaNodeMemo = memo(({data, selected}: DataSchemaNodeData) =>
           <DataSchemaNodeDate>Last updated: {formattedDate}</DataSchemaNodeDate>
         </div>
 
-        <button onClick={() => setIsCollapsed(!isCollapsed)} className="ml-4 cursor-pointer">
-          {isCollapsed ? <ArrowDownCircle /> : <ArrowUpCircle />}
+        <button onClick={toggleExpanded} className="ml-4 cursor-pointer">
+          {data.isExpanded ? <ArrowUpCircle /> : <ArrowDownCircle /> }
         </button>
       </div>
 
-      <DataSchemaNodeBody hidden={isCollapsed}>
+      <DataSchemaNodeBody hidden={!data.isExpanded}>
         <DataSchemaNodeTable>
           <DataSchemaNodeTableHead>Inputs</DataSchemaNodeTableHead>
 
@@ -178,7 +184,7 @@ export const DataSchemaNodeMemo = memo(({data, selected}: DataSchemaNodeData) =>
               <DataSchemaTableCell className="pl-0 font-light w-full">
                 <BaseHandle
                   id={entry.title} position={Position.Left} type="target"
-                  isConnectable={!isCollapsed}
+                  isConnectable={data.isExpanded}
                 />
 
                 <p className="font-bold">{entry.title}</p>
@@ -207,7 +213,7 @@ export const DataSchemaNodeMemo = memo(({data, selected}: DataSchemaNodeData) =>
 
                 <BaseHandle
                   id={entry.title} position={Position.Right} type="source"
-                  isConnectable={!isCollapsed}
+                  isConnectable={data.isExpanded}
                 />
               </DataSchemaTableCell>
             </DataSchemaTableRow>

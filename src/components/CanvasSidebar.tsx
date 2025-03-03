@@ -13,17 +13,32 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import { ZoomSlider } from "@/components/flow/zoom-slider.tsx";
+import { useReactFlow } from "@xyflow/react";
 
 interface IProps {
   canUndo: boolean;
   canRedo: boolean;
   onUndoClick(): unknown;
   onRedoClick(): unknown;
-  onExpandClick(): unknown;
-  onShrinkClick(): unknown;
 }
 
 export function CanvasSidebar({ canRedo, canUndo, onUndoClick, onRedoClick }: IProps) {
+  const reactFlow = useReactFlow();
+
+  const onExpandClick = () => {
+    const nodes = reactFlow.getNodes()
+    nodes.map((node) => {
+      reactFlow.updateNodeData(node.id, { isExpanded: true})
+    })
+  }
+  //
+  const onShrinkClick = () => {
+    const nodes = reactFlow.getNodes()
+    nodes.map((node) => {
+      reactFlow.updateNodeData(node.id, { isExpanded: false })
+    })
+  }
+
   return (
     <SidebarProvider>
       <Sidebar variant="floating">
@@ -53,14 +68,14 @@ export function CanvasSidebar({ canRedo, canUndo, onUndoClick, onRedoClick }: IP
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem title="Expand all">
+            <SidebarMenuItem title="Expand all" onClick={onExpandClick}>
               <SidebarMenuButton>
                 <Expand />
               </SidebarMenuButton>
             </SidebarMenuItem>
 
             <SidebarMenuItem title="Shrink all">
-              <SidebarMenuButton>
+              <SidebarMenuButton onClick={onShrinkClick}>
                 <Shrink />
               </SidebarMenuButton>
             </SidebarMenuItem>
