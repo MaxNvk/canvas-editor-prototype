@@ -1,6 +1,6 @@
 // Custom hook for managing history
 import {useCallback, useRef, useState} from "react";
-import {addEdge, applyEdgeChanges, applyNodeChanges, useEdgesState, useNodesState} from "@xyflow/react";
+import { addEdge, applyEdgeChanges, applyNodeChanges, useEdgesState, useNodesState } from "@xyflow/react";
 
 export const useFlowHistory = (initialNodes, initialEdges, maxHistorySize = 50) => {
   // Store only operations instead of full state
@@ -132,6 +132,11 @@ export const useFlowHistory = (initialNodes, initialEdges, maxHistorySize = 50) 
     }
   }, [currentIndex, operations, recreateFlowState]);
 
+  const resetHistory = () => {
+    setCurrentIndex(-1)
+    setOperations([])
+  }
+
   return {
     nodes,
     edges,
@@ -140,6 +145,9 @@ export const useFlowHistory = (initialNodes, initialEdges, maxHistorySize = 50) 
     onConnect,
     undo,
     redo,
+    setNodes,
+    setEdges,
+    resetHistory,
     canUndo: currentIndex >= 0,
     canRedo: currentIndex < operations.length - 1,
     historySize: operations.length,

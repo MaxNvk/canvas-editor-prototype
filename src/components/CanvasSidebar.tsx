@@ -1,12 +1,13 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarMenu, SidebarMenuButton,
+  SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger
 } from '@/components/ui/sidebar';
-import { ZoomIn, Redo2, Undo2, Expand, Shrink } from "lucide-react"
+import { ZoomIn, Redo2, Undo2, Expand, Shrink, Wand2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -77,6 +78,12 @@ export function CanvasSidebar({ canRedo, canUndo, onUndoClick, onRedoClick }: IP
             <SidebarMenuItem title="Shrink all">
               <SidebarMenuButton onClick={onShrinkClick}>
                 <Shrink />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem title="Auto Layout">
+              <SidebarMenuButton>
+                <Wand2 />
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
