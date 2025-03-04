@@ -32,12 +32,13 @@ function App() {
     onConnect,
     undo,
     redo,
-    canRedo,
     canUndo,
+    canRedo,
     setNodes,
     setEdges,
-    resetHistory
-  } = useFlowHistory([], [], 80);
+    reactFlowWrapper,
+    onNodeDragStop
+  } = useFlowHistory([], []);
 
   const lastKeyTime = useRef(0);
 
@@ -78,8 +79,7 @@ function App() {
     if (!rfInstance) return
 
     localStorage.setItem(flowKey, JSON.stringify(getFlowObject()));
-    resetHistory();
-  }, [resetHistory, rfInstance]);
+  }, [rfInstance]);
 
   const onRestore = useCallback(async (): Promise<any> => {
     const flow = JSON.parse(localStorage.getItem(flowKey) as string);
@@ -146,12 +146,13 @@ function App() {
   };
 
   return (
-    <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
+    <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded" ref={reactFlowWrapper}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onInit={setRfInstance}
         onNodesChange={onNodesChange}
+        onNodeDragStop={(_event, node) => onNodeDragStop({ id: node.id, type: "position", position: node.position })}
         onEdgesChange={onEdgesChange}
         onConnect={(params) => {
           if(!elementsSelectable) return
