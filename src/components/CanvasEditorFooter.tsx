@@ -1,21 +1,25 @@
 import { Button } from "@/components/ui/button.tsx";
 import { Download, Upload } from "lucide-react";
+import {Label} from "@/components/ui/label.tsx";
+import {Input} from "@/components/ui/input.tsx";
 
 interface IProps {
   onDownloadClick(): unknown
-  onImportClick(): unknown
+  onImport(event: React.ChangeEvent<HTMLInputElement>): unknown
   onRestore(): unknown
   onSave(): unknown
   canUndo: boolean
 }
 
-function CanvasEditorFooter({ onImportClick, onDownloadClick, onSave, onRestore, canUndo }: IProps) {
+function CanvasEditorFooter({ onImport, onDownloadClick, onSave, onRestore, canUndo }: IProps) {
   return (
     <div className="flex justify-between pt-4">
       <div className="flex gap-2">
-        <Button variant="outline" onClick={onImportClick}>
-          <Upload /> Import
+        <Button variant="outline" className="p-0!">
+          <Label htmlFor="fileImport" className="flex w-full h-full items-center justify-center"><Upload /> Import</Label>
         </Button>
+
+        <Input type="file" id="fileImport" className="sr-only" onInput={onImport} />
 
         <Button variant="outline" onClick={onDownloadClick}>
           <Download /> Export

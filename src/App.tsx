@@ -8,7 +8,7 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import { DataSchemaNodeMemo } from "@/components/flow/data-schema-node.tsx";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useRef, useState} from "react";
 import { useFlowHistory } from "@/hooks/use-flow-history.ts";
 import { initialNodes } from "@/shared/config/initial-elements.config.ts";
 import { downloadFile } from "@/shared/utils/download-file.util.ts";
@@ -115,16 +115,35 @@ function App() {
 
       if(!flow) {
         setNodes(initialNodes)
-        resetHistory()
       }
     }
 
     getInitialState()
   }, []);
 
-  const placeholderAction = () => {
-    alert("This feature is not implemented yet")
-  }
+  const onImport = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const jsonText = e.target?.result as string;
+        const flowData = JSON.parse(jsonText);
+
+        if (flowData && flowData.nodes && flowData.edges) {
+          setNodes(flowData.nodes);
+          setEdges(flowData.edges);
+        } else {
+          alert("Invalid JSON file format.");
+        }
+      } catch (error) {
+        alert("Error parsing JSON file.");
+        console.error("Import error:", error);
+      }
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
@@ -163,7 +182,7 @@ function App() {
 
       <CanvasEditorFooter
         onDownloadClick={onDownloadClick}
-        onImportClick={placeholderAction}
+        onImport={onImport}
         onRestore={onRestore}
         onSave={onSave}
         canUndo={canUndo}
