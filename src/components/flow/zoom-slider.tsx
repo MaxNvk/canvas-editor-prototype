@@ -10,7 +10,7 @@ import {
 
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/cn.utils";
 
 export const ZoomSlider = forwardRef<
   HTMLDivElement,

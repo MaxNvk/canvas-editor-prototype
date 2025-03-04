@@ -1,5 +1,5 @@
 import { getBezierPath, useInternalNode, EdgeProps } from '@xyflow/react';
-import {getEdgeParams, MeasuredNode} from "@/lib/initial-elements";
+import {getEdgeParams, MeasuredNode} from "@/shared/utils/initial-elements-actions.utils";
 
 interface IProps extends EdgeProps {
   id: string;

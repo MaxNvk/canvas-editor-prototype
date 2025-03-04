@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/compon
 import { ZoomSlider } from "@/components/flow/zoom-slider.tsx";
 import { useReactFlow, useViewport, useOnSelectionChange, type Node } from "@xyflow/react";
 import { useState } from "react";
-import { cn } from "@/lib/utils.ts";
+import { cn } from "@/shared/utils/cn.utils";
 
 interface IProps {
   canUndo: boolean;
@@ -48,7 +48,7 @@ const CanvasEditorMenubar = ({
       updateNodeData(node.id, { isExpanded: true })
     })
   }
-  //
+
   const onShrinkClick = () => {
     const nodes = getNodes()
     nodes.map((node) => {

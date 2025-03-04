@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button.tsx";
 import { Download, Upload } from "lucide-react";
-import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
+import { Label } from "@/components/ui/label.tsx";
+import { Input } from "@/components/ui/input.tsx";
 
 interface IProps {
   onDownloadClick(): unknown

@@ -3,9 +3,9 @@ import { BaseNode } from "@/components/flow/base-node";
 import { Position, useReactFlow } from "@xyflow/react";
 import dayjs from 'dayjs';
 import { BaseHandle } from "@/components/flow/base-handle.tsx";
-import { cn } from "@/lib/utils.ts";
+import { cn } from "@/shared/utils/cn.utils";
 import { ArrowRightSquareIcon, ChevronDown } from "lucide-react";
-import {Button} from "@/components/ui/button.tsx";
+import { Button } from "@/components/ui/button.tsx";
 
 
 /* DATA SCHEMA NODE HEADER ------------------------------------------------ */

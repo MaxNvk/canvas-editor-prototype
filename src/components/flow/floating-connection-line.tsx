@@ -1,6 +1,6 @@
 import { getBezierPath, Position, Node } from '@xyflow/react';
 
-import { getEdgeParams, type MeasuredNode } from "@/lib/initial-elements";
+import { getEdgeParams, type MeasuredNode } from "@/shared/utils/initial-elements-actions.utils";
 
 interface IProps {
   toX: number;
