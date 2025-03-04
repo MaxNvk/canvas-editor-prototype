@@ -122,6 +122,10 @@ function App() {
     getInitialState()
   }, []);
 
+  const placeholderAction = () => {
+    alert("This feature is not implemented yet")
+  }
+
   return (
     <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
       <ReactFlow
@@ -159,6 +163,7 @@ function App() {
 
       <CanvasEditorFooter
         onDownloadClick={onDownloadClick}
+        onImportClick={placeholderAction}
         onRestore={onRestore}
         onSave={onSave}
         canUndo={canUndo}

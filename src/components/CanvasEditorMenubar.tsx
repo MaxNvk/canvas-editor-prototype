@@ -68,6 +68,10 @@ const CanvasEditorMenubar = ({
     setSelectedNode(null)
   }
 
+  const placeholderAction = () => {
+    alert("This feature is not implemented yet")
+  }
+
   return (
     <NavigationMenu className="z-10 w-full pl-4 pr-8 py-1 bg-white border-b">
       <h2 className="text-xl font-semibold mr-auto">Industrial Pathway</h2>
@@ -86,7 +90,7 @@ const CanvasEditorMenubar = ({
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <Button variant="ghost" size="sm" title="Reverse">
+          <Button variant="ghost" size="sm" title="Reverse" onClick={placeholderAction}>
             <ArrowLeftRight />
           </Button>
         </NavigationMenuItem>
@@ -105,7 +109,7 @@ const CanvasEditorMenubar = ({
 
         <NavigationMenuDivider />
 
-        <NavigationMenuItem>
+        <NavigationMenuItem onClick={placeholderAction}>
           <Button variant="ghost" size="sm" title="Auto Layout">
             <Wand2 />
           </Button>

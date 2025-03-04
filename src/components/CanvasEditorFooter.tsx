@@ -3,16 +3,17 @@ import { Download, Upload } from "lucide-react";
 
 interface IProps {
   onDownloadClick(): unknown
+  onImportClick(): unknown
   onRestore(): unknown
   onSave(): unknown
   canUndo: boolean
 }
 
-function CanvasEditorFooter({ onDownloadClick, onSave, onRestore, canUndo }: IProps) {
+function CanvasEditorFooter({ onImportClick, onDownloadClick, onSave, onRestore, canUndo }: IProps) {
   return (
     <div className="flex justify-between pt-4">
       <div className="flex gap-2">
-        <Button variant="outline">
+        <Button variant="outline" onClick={onImportClick}>
           <Upload /> Import
         </Button>
 
