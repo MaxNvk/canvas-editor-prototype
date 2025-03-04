@@ -8,7 +8,7 @@ export const initialNodes: Node[] = [
     data: {
       label: "Ammonia from H2 from Coal Gasification w/ CC S",
       details: "Life Cycle Assessment of Corn based Butanol as a transportation fuel",
-      bgColor: "#bfdbff",
+      bgColor: "#cfedfc",
       isExpanded: true,
       lastUpdated: 1740989832130,
       schema: {
@@ -49,7 +49,7 @@ export const initialNodes: Node[] = [
     data: {
       label: "Ammonia Transportation and Distribution",
       details: "Analysis of Petroleum Refining",
-      bgColor: "#ffe54e",
+      bgColor: "#ffeb99",
       isExpanded: true,
       lastUpdated: 1740987832130,
       schema: {

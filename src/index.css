@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-main-gray-1: #404149;
+  --color-main-green-1: #26ad60;
+}
+
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));

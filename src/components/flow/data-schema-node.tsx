@@ -4,7 +4,8 @@ import { Position, useReactFlow } from "@xyflow/react";
 import dayjs from 'dayjs';
 import { BaseHandle } from "@/components/flow/base-handle.tsx";
 import { cn } from "@/lib/utils.ts";
-import { ArrowRightSquareIcon, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { ArrowRightSquareIcon, ChevronDown } from "lucide-react";
+import {Button} from "@/components/ui/button.tsx";
 
 
 /* DATA SCHEMA NODE HEADER ------------------------------------------------ */
@@ -16,7 +17,7 @@ export const DataSchemaNodeHeader = ({
   children,
 }: PropsWithChildren) => {
   return (
-    <h2 className="text-left text-black font-bold leading-tight">
+    <h2 className="text-sm text-left text-black font-bold leading-tight">
       {children}
     </h2>
   );
@@ -170,9 +171,9 @@ export const DataSchemaNodeMemo = memo(({ data, selected, id }: DataSchemaNodeDa
           <DataSchemaNodeDate>Last updated: {formattedDate}</DataSchemaNodeDate>
         </div>
 
-        <button onClick={toggleExpanded} className="ml-4 cursor-pointer">
-          {data.isExpanded ? <ArrowUpCircle /> : <ArrowDownCircle /> }
-        </button>
+        <Button variant="ghost" onClick={toggleExpanded} className={cn("ml-4 p-0.75! h-auto! rounded-full", { "bg-main-green-1 hover:bg-main-green-1/80": data.isExpanded, "bg-white": !data.isExpanded })}>
+          <ChevronDown className={cn("size-3.5", { "-rotate-90": !data.isExpanded, "stroke-white": data.isExpanded })} />
+        </Button>
       </div>
 
       <DataSchemaNodeBody hidden={!data.isExpanded}>

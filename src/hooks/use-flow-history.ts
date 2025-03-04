@@ -1,8 +1,18 @@
 // Custom hook for managing history
 import {useCallback, useRef, useState} from "react";
-import { addEdge, applyEdgeChanges, applyNodeChanges, useEdgesState, useNodesState } from "@xyflow/react";
+import {
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  type Edge,
+  type Node,
+  type OnNodesChange,
+  OnEdgesChange,
+  useEdgesState,
+  useNodesState
+} from "@xyflow/react";
 
-export const useFlowHistory = (initialNodes, initialEdges, maxHistorySize = 50) => {
+export const useFlowHistory = (initialNodes: Node[], initialEdges: Edge[], maxHistorySize = 50) => {
   // Store only operations instead of full state
   const [operations, setOperations] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
@@ -22,7 +32,7 @@ export const useFlowHistory = (initialNodes, initialEdges, maxHistorySize = 50) 
   }, [operations, maxHistorySize]);
 
   // Record operation types rather than full state copies
-  const recordOperation = useCallback((type, payload) => {
+  const recordOperation = useCallback((type: string, payload) => {
     if (skipNextHistoryUpdate.current) {
       skipNextHistoryUpdate.current = false;
       return;
@@ -39,7 +49,7 @@ export const useFlowHistory = (initialNodes, initialEdges, maxHistorySize = 50) 
   }, [operations, currentIndex, manageHistorySize]);
 
   // Apply node changes with history
-  const onNodesChange = useCallback((changes) => {
+  const onNodesChange = useCallback((changes: OnNodesChange<Node>[]) => {
     // Only record completed drag operations
     const significantChanges = changes.filter(
       change => change.type !== 'position' ||
@@ -60,7 +70,7 @@ export const useFlowHistory = (initialNodes, initialEdges, maxHistorySize = 50) 
   }, [recordOperation]);
 
   // Apply edge changes with history
-  const onEdgesChange = useCallback((changes) => {
+  const onEdgesChange = useCallback((changes: OnEdgesChange<Edge>[]) => {
     if (changes.some(change => change.type === 'remove')) {
       recordOperation('edges-change', structuredClone(changes));
     }
