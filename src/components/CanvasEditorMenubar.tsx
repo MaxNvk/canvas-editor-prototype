@@ -10,6 +10,7 @@ import { ZoomSlider } from "@/components/flow/zoom-slider.tsx";
 import { useReactFlow, useViewport, useOnSelectionChange, type Node } from "@xyflow/react";
 import { useState } from "react";
 import { cn } from "@/shared/utils/cn.utils";
+import { toast } from "sonner";
 
 interface IProps {
   canUndo: boolean;
@@ -66,6 +67,8 @@ const CanvasEditorMenubar = ({
       }})
 
     setSelectedNode(null)
+
+    toast.success("Node duplicated", {position: "top-center"})
   }
 
   const placeholderAction = () => {

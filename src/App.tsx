@@ -14,6 +14,8 @@ import { initialNodes } from "@/shared/config/initial-elements.config.ts";
 import { downloadFile } from "@/shared/utils/download-file.util.ts";
 import CanvasEditorMenubar from "@/components/CanvasEditorMenubar.tsx";
 import CanvasEditorFooter from "@/components/CanvasEditorFooter.tsx";
+import { toast } from "sonner"
+
 
 const nodeTypes = {
   dataSchema: DataSchemaNodeMemo,
@@ -79,6 +81,8 @@ function App() {
     if (!rfInstance) return
 
     localStorage.setItem(flowKey, JSON.stringify(getFlowObject()));
+
+    toast.success("Flow saved successfully to the Local Storage", { position: "top-center" })
   }, [rfInstance]);
 
   const onRestore = useCallback(async (): Promise<any> => {
