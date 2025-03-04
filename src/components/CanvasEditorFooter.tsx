@@ -12,6 +12,10 @@ interface IProps {
 }
 
 function CanvasEditorFooter({ onImport, onDownloadClick, onSave, onRestore, canUndo }: IProps) {
+  const placeholderAction = () => {
+    alert("This feature is not implemented yet")
+  }
+
   return (
     <div className="flex justify-between pt-4">
       <div className="flex gap-2">
@@ -28,7 +32,7 @@ function CanvasEditorFooter({ onImport, onDownloadClick, onSave, onRestore, canU
 
       <div className="flex gap-2">
         <Button variant="outline" onClick={onRestore} disabled={!canUndo}>Reset</Button>
-        <Button variant="outline">Save as New</Button>
+        <Button variant="outline" onClick={placeholderAction}>Save as New</Button>
         <Button variant="secondary" onClick={onSave} disabled={!canUndo}>Save</Button>
       </div>
     </div>
