@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Maximize, Minus, Plus } from "lucide-react";
+import { Maximize } from "lucide-react";
 
 import {
   useViewport,
@@ -17,7 +17,7 @@ export const ZoomSlider = forwardRef<
   Omit<PanelProps, "children">
 >(({ className, ...props }, _ref) => {
   const { zoom } = useViewport();
-  const { zoomTo, zoomIn, zoomOut, fitView } = useReactFlow();
+  const { zoomTo, fitView } = useReactFlow();
 
   const { minZoom, maxZoom } = useStore(
     (state) => ({

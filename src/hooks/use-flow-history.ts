@@ -1,20 +1,18 @@
 // Custom hook for managing history
-import {useCallback, useRef, useState} from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
   type Edge,
-  type Node,
-  type OnNodesChange,
-  OnEdgesChange,
+  type Node as ReactFlowNode,
   useEdgesState,
-  useNodesState
+  useNodesState, NodeChange, EdgeChange
 } from "@xyflow/react";
 
-export const useFlowHistory = (initialNodes: Node[], initialEdges: Edge[], maxHistorySize = 50) => {
+export const useFlowHistory = (initialNodes: ReactFlowNode[], initialEdges: Edge[], maxHistorySize = 50) => {
   // Store only operations instead of full state
-  const [operations, setOperations] = useState([]);
+  const [operations, setOperations] = useState<any>([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
@@ -32,7 +30,7 @@ export const useFlowHistory = (initialNodes: Node[], initialEdges: Edge[], maxHi
   }, [operations, maxHistorySize]);
 
   // Record operation types rather than full state copies
-  const recordOperation = useCallback((type: string, payload) => {
+  const recordOperation = useCallback(<T>(type: string, payload: T) => {
     if (skipNextHistoryUpdate.current) {
       skipNextHistoryUpdate.current = false;
       return;
@@ -49,7 +47,7 @@ export const useFlowHistory = (initialNodes: Node[], initialEdges: Edge[], maxHi
   }, [operations, currentIndex, manageHistorySize]);
 
   // Apply node changes with history
-  const onNodesChange = useCallback((changes: OnNodesChange<Node>[]) => {
+  const onNodesChange = useCallback((changes: NodeChange<ReactFlowNode>[]) => {
     // Only record completed drag operations
     const significantChanges = changes.filter(
       change => change.type !== 'position' ||
@@ -70,7 +68,7 @@ export const useFlowHistory = (initialNodes: Node[], initialEdges: Edge[], maxHi
   }, [recordOperation]);
 
   // Apply edge changes with history
-  const onEdgesChange = useCallback((changes: OnEdgesChange<Edge>[]) => {
+  const onEdgesChange = useCallback((changes: EdgeChange<Edge>[]) => {
     if (changes.some(change => change.type === 'remove')) {
       recordOperation('edges-change', structuredClone(changes));
     }
@@ -79,14 +77,14 @@ export const useFlowHistory = (initialNodes: Node[], initialEdges: Edge[], maxHi
   }, [recordOperation]);
 
   // Connect nodes with history
-  const onConnect = useCallback((connection) => {
+  const onConnect = useCallback((connection: any) => {
     const newEdge = { ...connection, id: `e${connection.source}-${connection.sourceHandle.replaceAll(" ", "-")}-${connection.target}-${connection.targetHandle.replaceAll(" ", "-")}` };
     recordOperation('connect', newEdge);
     setEdges(edges => addEdge(newEdge, edges));
   }, [recordOperation]);
 
   // Recreate the flow state from operations
-  const recreateFlowState = useCallback((targetIndex) => {
+  const recreateFlowState = useCallback((targetIndex: number) => {
     // Start from initial state
     let currentNodes = structuredClone(initialNodes);
     let currentEdges = structuredClone(initialEdges);

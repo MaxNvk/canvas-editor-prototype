@@ -3,21 +3,35 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu.tsx";
-import { ZoomIn, MousePointer2Icon, Move, Copy, Expand, Shrink, Undo2, Redo2, ZoomOut, Wand2, ChevronDown } from "lucide-react";
+import { ZoomIn, MousePointer2Icon, Move, Copy, Expand, Shrink, Undo2, Redo2, ZoomOut, Wand2, ChevronDown, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuTrigger} from "@/components/ui/dropdown-menu.tsx";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu.tsx";
 import { ZoomSlider } from "@/components/flow/zoom-slider.tsx";
 import { useReactFlow, useViewport, useOnSelectionChange, type Node } from "@xyflow/react";
 import { useState } from "react";
+import { cn } from "@/lib/utils.ts";
 
 interface IProps {
   canUndo: boolean;
   canRedo: boolean;
+  nodesDraggable: boolean;
+  elementsSelectable: boolean;
+  toggleNodesDraggable(): unknown;
+  toggleElementsSelectable(): unknown;
   onUndoClick(): unknown;
   onRedoClick(): unknown;
 }
 
-const CanvasMenubar = ({canRedo, canUndo, onUndoClick, onRedoClick}: IProps) => {
+const CanvasMenubar = ({
+                         canRedo,
+                         canUndo,
+                         onUndoClick,
+                         onRedoClick,
+                         nodesDraggable,
+                         toggleNodesDraggable,
+                         toggleElementsSelectable,
+                         elementsSelectable
+}: IProps) => {
   const { zoom } = useViewport();
   const { zoomIn, zoomOut, updateNodeData, getNodes, addNodes } = useReactFlow()
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
@@ -61,14 +75,20 @@ const CanvasMenubar = ({canRedo, canUndo, onUndoClick, onRedoClick}: IProps) => 
 
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Button variant="ghost" size="sm" title="Select">
-            <MousePointer2Icon />
+          <Button variant="ghost" size="sm" title="Select" onClick={toggleElementsSelectable}>
+            <MousePointer2Icon className={cn({'stroke-main-green-1': elementsSelectable})} />
           </Button>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <Button variant="ghost" size="sm" title="Move">
-            <Move />
+          <Button variant="ghost" size="sm" title="Move" onClick={toggleNodesDraggable}>
+            <Move className={cn({'stroke-main-green-1': nodesDraggable})} />
+          </Button>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <Button variant="ghost" size="sm" title="Reverse">
+            <ArrowLeftRight />
           </Button>
         </NavigationMenuItem>
 

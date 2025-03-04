@@ -2,14 +2,15 @@ import '@xyflow/react/dist/style.css';
 import {
   Background,
   ReactFlow,
+  type Node,
   type Edge,
-  type OnInit,
+  type ReactFlowInstance,
   useReactFlow,
   getNodesBounds,
   getViewportForBounds
 } from '@xyflow/react';
 import { DataSchemaNodeMemo } from "@/components/flow/data-schema-node.tsx";
-import {useCallback, useEffect, useRef, useState} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFlowHistory } from "@/hooks/use-flow-history.ts";
 import { initialNodes } from "@/shared/config/initial-elements.config.ts";
 import { Button } from "@/components/ui/button.tsx";
@@ -45,8 +46,8 @@ function App() {
     resetHistory
   } = useFlowHistory(initialNodes, [], 80);
 
-  // Define throttled key handler for better performance
   const lastKeyTime = useRef(0);
+
   const onKeyDown = useCallback((event: KeyboardEvent) => {
     const now = Date.now();
     if (now - lastKeyTime.current < 100) return;
@@ -75,10 +76,11 @@ function App() {
     };
   }, [onKeyDown]);
 
-  const [rfInstance, setRfInstance] = useState<OnInit<Node, Edge> | null>(null);
+  const [rfInstance, setRfInstance] = useState<ReactFlowInstance<Node, Edge> | null>(null);
   const onSave = useCallback(() => {
     if (!rfInstance) return
 
+    // @ts-ignore
     const flow = rfInstance.toObject();
     localStorage.setItem(flowKey, JSON.stringify(flow));
     resetHistory();
@@ -110,7 +112,7 @@ function App() {
     );
 
     toPng(document.querySelector('.react-flow__viewport') as HTMLElement, {
-      backgroundColor: '#ccceee',
+      backgroundColor: '#fff',
       width: imageWidth,
       height: imageHeight,
       style: {
@@ -121,6 +123,9 @@ function App() {
     }).then((response) => downloadImage(response, "reactflow"));
   };
 
+  const [nodesDraggable, setNodesDraggable] = useState(true)
+  const [elementsSelectable, setElementsSelectable] = useState(true)
+
   return (
     <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
       <ReactFlow
@@ -129,17 +134,29 @@ function App() {
         onInit={setRfInstance}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onConnect={(params) => {
+          if(!elementsSelectable) return
+
+          onConnect(params)
+        }}
         nodeTypes={nodeTypes}
         fitView
-        nodesDraggable
-        elementsSelectable
+        nodesDraggable={nodesDraggable}
+        elementsSelectable={elementsSelectable}
+        edgesFocusable={elementsSelectable}
+        edgesReconnectable={elementsSelectable}
+        nodesConnectable={elementsSelectable}
+        multiSelectionKeyCode="Shift"
       >
         <CanvasMenubar
           canRedo={canRedo}
           canUndo={canUndo}
           onRedoClick={redo}
           onUndoClick={undo}
+          nodesDraggable={nodesDraggable}
+          elementsSelectable={elementsSelectable}
+          toggleNodesDraggable={() => setNodesDraggable(!nodesDraggable)}
+          toggleElementsSelectable={() => setElementsSelectable(!elementsSelectable)}
         />
         <Background size={3} />
       </ReactFlow>

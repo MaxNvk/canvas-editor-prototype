@@ -1,30 +1,30 @@
-import { getBezierPath } from '@xyflow/react';
+import { getBezierPath, Position, Node } from '@xyflow/react';
 
-import { getEdgeParams } from "@/lib/initial-elements";
+import { getEdgeParams, type MeasuredNode } from "@/lib/initial-elements";
 
-function FloatingConnectionLine({
-    toX,
-    toY,
-    fromPosition,
-    toPosition,
-    fromNode,
-  }) {
+interface IProps {
+  toX: number;
+  toY: number;
+  fromPosition: Position;
+  toPosition: Position;
+  fromNode?: Node;
+}
+
+
+function FloatingConnectionLine({toX, toY, fromPosition, toPosition, fromNode }: IProps) {
   if (!fromNode) {
     return null;
   }
 
-  const targetNode = {
+  const targetNode: Node = {
     id: 'connection-target',
-    measured: {
-      width: 1,
-      height: 1,
-    },
-    internals: {
-      positionAbsolute: { x: toX, y: toY },
-    },
+    width: 1,
+    height: 1,
+    // @ts-ignore
+    positionAbsolute: { x: toX, y: toY },
   };
 
-  const { sx, sy } = getEdgeParams(fromNode, targetNode);
+  const { sx, sy } = getEdgeParams(fromNode as MeasuredNode, targetNode as MeasuredNode);
   const [edgePath] = getBezierPath({
     sourceX: sx,
     sourceY: sy,
