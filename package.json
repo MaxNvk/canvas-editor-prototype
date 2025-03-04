@@ -34,7 +34,6 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-tailwindcss": "^3.18.0",
-    "html-to-image": "^1.11.13",
     "lucide-react": "^0.477.0",
     "postcss": "^8.5.3",
     "postcss-import": "^16.1.0",

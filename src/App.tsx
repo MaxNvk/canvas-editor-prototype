@@ -6,18 +6,14 @@ import {
   type Edge,
   type ReactFlowInstance,
   useReactFlow,
-  getNodesBounds,
-  getViewportForBounds
 } from '@xyflow/react';
 import { DataSchemaNodeMemo } from "@/components/flow/data-schema-node.tsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFlowHistory } from "@/hooks/use-flow-history.ts";
 import { initialNodes } from "@/shared/config/initial-elements.config.ts";
-import { Button } from "@/components/ui/button.tsx";
-import { toPng } from "html-to-image";
-import { downloadImage } from "@/shared/utils/download-image.util.ts";
-import { Upload, Download } from "lucide-react"
-import CanvasMenubar from "@/components/canvas-menubar.tsx";
+import { downloadFile } from "@/shared/utils/download-file.util.ts";
+import CanvasEditorMenubar from "@/components/CanvasEditorMenubar.tsx";
+import CanvasEditorFooter from "@/components/CanvasEditorFooter.tsx";
 
 const nodeTypes = {
   dataSchema: DataSchemaNodeMemo,
@@ -25,11 +21,8 @@ const nodeTypes = {
 
 const flowKey = "flow-key-1";
 
-const imageWidth = 1300;
-const imageHeight = 740;
-
 function App() {
-  const { setViewport, getNodes } = useReactFlow();
+  const { setViewport } = useReactFlow();
 
   const {
     nodes,
@@ -44,7 +37,7 @@ function App() {
     setNodes,
     setEdges,
     resetHistory
-  } = useFlowHistory(initialNodes, [], 80);
+  } = useFlowHistory([], [], 80);
 
   const lastKeyTime = useRef(0);
 
@@ -77,54 +70,57 @@ function App() {
   }, [onKeyDown]);
 
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance<Node, Edge> | null>(null);
+
+  // @ts-ignore
+  const getFlowObject = () => rfInstance.toObject();
+
   const onSave = useCallback(() => {
     if (!rfInstance) return
 
-    // @ts-ignore
-    const flow = rfInstance.toObject();
-    localStorage.setItem(flowKey, JSON.stringify(flow));
+    localStorage.setItem(flowKey, JSON.stringify(getFlowObject()));
     resetHistory();
   }, [resetHistory, rfInstance]);
 
-  const onRestore = useCallback(() => {
-    const restoreFlow = async () => {
-      const flow = JSON.parse(localStorage.getItem(flowKey) as string);
+  const onRestore = useCallback(async (): Promise<any> => {
+    const flow = JSON.parse(localStorage.getItem(flowKey) as string);
 
-      if (!flow) return
+    if (!flow) return
 
-      const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-      setNodes(flow.nodes || []);
-      setEdges(flow.edges || []);
+    const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+    setNodes(flow.nodes || []);
+    setEdges(flow.edges || []);
 
-      await setViewport({x, y, zoom});
-    };
+    await setViewport({x, y, zoom});
 
-    restoreFlow();
+    return flow
   }, [setEdges, setNodes, setViewport]);
 
   const onDownloadClick = () => {
-    const nodesBounds = getNodesBounds(getNodes());
-    const viewport = getViewportForBounds(
-      nodesBounds,
-      imageWidth,
-      imageHeight,
-      0.5, 2, 0
-    );
+    if (!rfInstance) return;
 
-    toPng(document.querySelector('.react-flow__viewport') as HTMLElement, {
-      backgroundColor: '#fff',
-      width: imageWidth,
-      height: imageHeight,
-      style: {
-        width: `${imageWidth}`,
-        height: `${imageHeight}`,
-        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
-      },
-    }).then((response) => downloadImage(response, "reactflow"));
+    const flowData = getFlowObject()
+    const jsonString = JSON.stringify(flowData, null, 2); // Pretty print JSON
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    downloadFile(url, "reactflow.json")
   };
 
   const [nodesDraggable, setNodesDraggable] = useState(true)
   const [elementsSelectable, setElementsSelectable] = useState(true)
+
+  useEffect(() => {
+    const getInitialState = async () => {
+      const flow = await onRestore()
+
+      if(!flow) {
+        setNodes(initialNodes)
+        resetHistory()
+      }
+    }
+
+    getInitialState()
+  }, []);
 
   return (
     <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
@@ -148,7 +144,7 @@ function App() {
         nodesConnectable={elementsSelectable}
         multiSelectionKeyCode="Shift"
       >
-        <CanvasMenubar
+        <CanvasEditorMenubar
           canRedo={canRedo}
           canUndo={canUndo}
           onRedoClick={redo}
@@ -161,23 +157,12 @@ function App() {
         <Background size={3} />
       </ReactFlow>
 
-      <div className="flex justify-between pt-4">
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Upload /> Import
-          </Button>
-
-          <Button variant="outline" onClick={onDownloadClick}>
-            <Download /> Export
-          </Button>
-        </div>
-
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={onRestore} disabled={!canUndo}>Reset</Button>
-          <Button variant="outline">Save as New</Button>
-          <Button variant="secondary" onClick={onSave} disabled={!canUndo}>Save</Button>
-        </div>
-      </div>
+      <CanvasEditorFooter
+        onDownloadClick={onDownloadClick}
+        onRestore={onRestore}
+        onSave={onSave}
+        canUndo={canUndo}
+      />
     </div>
   );
 }

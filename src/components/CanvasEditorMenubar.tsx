@@ -22,7 +22,7 @@ interface IProps {
   onRedoClick(): unknown;
 }
 
-const CanvasMenubar = ({
+const CanvasEditorMenubar = ({
                          canRedo,
                          canUndo,
                          onUndoClick,
@@ -39,7 +39,6 @@ const CanvasMenubar = ({
   useOnSelectionChange({
     onChange(data) {
       setSelectedNode(data.nodes[0] || null)
-      console.log(data.nodes[0])
     }
   })
 
@@ -193,4 +192,4 @@ const CanvasMenubar = ({
   );
 };
 
-export default CanvasMenubar;
+export default CanvasEditorMenubar;
