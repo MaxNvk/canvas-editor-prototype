@@ -21,6 +21,7 @@ interface IProps {
   toggleElementsSelectable(): unknown;
   onUndoClick(): unknown;
   onRedoClick(): unknown;
+  onAutoLayout(): unknown
 }
 
 const CanvasEditorMenubar = ({
@@ -31,7 +32,8 @@ const CanvasEditorMenubar = ({
                          nodesDraggable,
                          toggleNodesDraggable,
                          toggleElementsSelectable,
-                         elementsSelectable
+                         elementsSelectable,
+                         onAutoLayout
 }: IProps) => {
   const { zoom } = useViewport();
   const { zoomIn, zoomOut, updateNodeData, getNodes, addNodes } = useReactFlow()
@@ -112,8 +114,8 @@ const CanvasEditorMenubar = ({
 
         <NavigationMenuDivider />
 
-        <NavigationMenuItem onClick={placeholderAction}>
-          <Button variant="ghost" size="sm" title="Auto Layout">
+        <NavigationMenuItem>
+          <Button variant="ghost" size="sm" title="Auto Layout" onClick={onAutoLayout}>
             <Wand2 />
           </Button>
         </NavigationMenuItem>
@@ -194,7 +196,6 @@ const CanvasEditorMenubar = ({
          </DropdownMenu>
        </NavigationMenuItem>
       </NavigationMenuList>
-
     </NavigationMenu>
   );
 };

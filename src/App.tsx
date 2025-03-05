@@ -15,6 +15,7 @@ import { downloadFile } from "@/shared/utils/download-file.util.ts";
 import CanvasEditorMenubar from "@/components/CanvasEditorMenubar.tsx";
 import CanvasEditorFooter from "@/components/CanvasEditorFooter.tsx";
 import { toast } from "sonner"
+import { getLayoutedElements } from "@/shared/utils/get-layouted-elements.util.ts";
 
 
 const nodeTypes = {
@@ -24,7 +25,7 @@ const nodeTypes = {
 const flowKey = "flow-key-1";
 
 function App() {
-  const { setViewport } = useReactFlow();
+  const { fitView } = useReactFlow();
 
   const {
     nodes,
@@ -90,14 +91,13 @@ function App() {
 
     if (!flow) return
 
-    const { x = 0, y = 0, zoom = 1 } = flow.viewport;
     setNodes(flow.nodes || []);
     setEdges(flow.edges || []);
 
-    await setViewport({x, y, zoom});
+    setTimeout(() => fitView({ duration: 300 }))
 
     return flow
-  }, [setEdges, setNodes, setViewport]);
+  }, [setEdges, setNodes, fitView]);
 
   const onDownloadClick = () => {
     if (!rfInstance) return;
@@ -149,6 +149,15 @@ function App() {
     reader.readAsText(file);
   };
 
+  const onAutoLayout = useCallback(() => {
+    const { nodes: newNodes, edges: newEdges } = getLayoutedElements(nodes, edges)
+
+    setNodes(newNodes)
+    setEdges(newEdges)
+
+    setTimeout(() => fitView({ duration: 300 }))
+  }, [nodes, edges, fitView])
+
   return (
     <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded" ref={reactFlowWrapper}>
       <ReactFlow
@@ -177,6 +186,7 @@ function App() {
           canUndo={canUndo}
           onRedoClick={redo}
           onUndoClick={undo}
+          onAutoLayout={onAutoLayout}
           nodesDraggable={nodesDraggable}
           elementsSelectable={elementsSelectable}
           toggleNodesDraggable={() => setNodesDraggable(!nodesDraggable)}
