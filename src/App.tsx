@@ -39,7 +39,6 @@ function App() {
     canRedo,
     setNodes,
     setEdges,
-    reactFlowWrapper,
     onNodeDragStop
   } = useFlowHistory([], []);
 
@@ -48,19 +47,14 @@ function App() {
   const onKeyDown = useCallback((event: KeyboardEvent) => {
     const now = Date.now();
     if (now - lastKeyTime.current < 100) return;
+
     lastKeyTime.current = now;
 
+    event.preventDefault();
     if ((event.metaKey || event.ctrlKey) && event.key === 'z') {
-      if (!event.shiftKey) {
-        event.preventDefault();
-        undo();
-        return;
-      }
-
-      event.preventDefault();
-      redo();
+      if (!event.shiftKey) undo();
+      else redo();
     } else if ((event.metaKey || event.ctrlKey) && event.key === 'y') {
-      event.preventDefault();
       redo();
     }
   }, [undo, redo]);
@@ -116,10 +110,9 @@ function App() {
   useEffect(() => {
     const getInitialState = async () => {
       const flow = await onRestore()
+      if(!!flow) return
 
-      if(!flow) {
-        setNodes(initialNodes)
-      }
+      setNodes(initialNodes)
     }
 
     getInitialState()
@@ -159,7 +152,7 @@ function App() {
   }, [nodes, edges, fitView])
 
   return (
-    <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded" ref={reactFlowWrapper}>
+    <div className="h-[75dvh] w-[75dvw] m-auto border-2 border-black rounded">
       <ReactFlow
         nodes={nodes}
         edges={edges}

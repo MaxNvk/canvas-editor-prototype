@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import useUndoable from "use-undoable";
 import {
   addEdge,
@@ -11,8 +11,6 @@ import {
 } from "@xyflow/react";
 
 export const useFlowHistory = (initialNodes: ReactFlowNode[], initialEdges: Edge[]) => {
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
-
   const [
     elements,
     setElements,
@@ -80,6 +78,5 @@ export const useFlowHistory = (initialNodes: ReactFlowNode[], initialEdges: Edge
     onNodeDragStop,
     setNodes: (nodes: ReactFlowNode[]) => triggerUpdate("nodes", nodes),
     setEdges: (edges: Edge[]) => triggerUpdate("edges", edges),
-    reactFlowWrapper, // Expose ref for positioning
   };
 };
