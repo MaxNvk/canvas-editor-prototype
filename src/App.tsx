@@ -6,6 +6,8 @@ import {
   type Edge,
   type ReactFlowInstance,
   useReactFlow,
+  useOnSelectionChange,
+  useViewport,
 } from '@xyflow/react';
 import { DataSchemaNodeMemo } from "@/components/flow/data-schema-node.tsx";
 import { type ChangeEvent, useCallback, useEffect, useRef, useState} from "react";
@@ -25,7 +27,8 @@ const nodeTypes = {
 const flowKey = "flow-key-1";
 
 function App() {
-  const { fitView } = useReactFlow();
+  const { fitView, addNodes, updateNodeData, zoomIn, zoomOut } = useReactFlow();
+  const { zoom } = useViewport()
 
   const {
     nodes,
@@ -41,6 +44,40 @@ function App() {
     setEdges,
     onNodeDragStop
   } = useFlowHistory([], []);
+
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+
+  const onDuplicateClick = () => {
+    addNodes({
+      ...(selectedNode as Node),
+      id: `${selectedNode!.id}-copy`,
+      position: {
+        x: selectedNode!.position.x + 75,
+        y: selectedNode!.position.y + 75,
+      }})
+
+    setSelectedNode(null)
+
+    toast.success("Node duplicated", {position: "top-center"})
+  }
+
+  useOnSelectionChange({
+    onChange(data) {
+      setSelectedNode(data.nodes[0] || null)
+    }
+  })
+
+  const onExpandClick = () => {
+    nodes.map((node) => {
+      updateNodeData(node.id, { isExpanded: true })
+    })
+  }
+
+  const onShrinkClick = () => {
+    nodes.map((node) => {
+      updateNodeData(node.id, { isExpanded: false })
+    })
+  }
 
   const lastKeyTime = useRef(0);
 
@@ -175,6 +212,7 @@ function App() {
         multiSelectionKeyCode="Shift"
       >
         <CanvasEditorMenubar
+          zoom={zoom}
           canRedo={canRedo}
           canUndo={canUndo}
           onRedoClick={redo}
@@ -184,6 +222,12 @@ function App() {
           elementsSelectable={elementsSelectable}
           toggleNodesDraggable={() => setNodesDraggable(!nodesDraggable)}
           toggleElementsSelectable={() => setElementsSelectable(!elementsSelectable)}
+          onDuplicateClick={onDuplicateClick}
+          onShrinkClick={onShrinkClick}
+          onExpandClick={onExpandClick}
+          onZoomInClick={() => zoomIn({ duration: 300 })}
+          onZoomOutClick={() => zoomOut({ duration: 300 })}
+          isDuplicateDisabled={!selectedNode}
         />
         <Background size={3} />
       </ReactFlow>

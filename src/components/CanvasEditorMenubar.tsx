@@ -7,71 +7,45 @@ import { ZoomIn, MousePointer2Icon, Move, Copy, Expand, Shrink, Undo2, Redo2, Zo
 import { Button } from "@/components/ui/button.tsx";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu.tsx";
 import { ZoomSlider } from "@/components/flow/zoom-slider.tsx";
-import { useReactFlow, useViewport, useOnSelectionChange, type Node } from "@xyflow/react";
-import { useState } from "react";
 import { cn } from "@/shared/utils/cn.utils";
-import { toast } from "sonner";
 
 interface IProps {
   canUndo: boolean;
   canRedo: boolean;
   nodesDraggable: boolean;
   elementsSelectable: boolean;
+  isDuplicateDisabled: boolean;
+  zoom: number;
   toggleNodesDraggable(): unknown;
   toggleElementsSelectable(): unknown;
   onUndoClick(): unknown;
   onRedoClick(): unknown;
-  onAutoLayout(): unknown
+  onAutoLayout(): unknown;
+  onDuplicateClick(): unknown;
+  onExpandClick(): unknown;
+  onShrinkClick(): unknown;
+  onZoomInClick(): unknown;
+  onZoomOutClick(): unknown;
 }
 
 const CanvasEditorMenubar = ({
-                         canRedo,
-                         canUndo,
-                         onUndoClick,
-                         onRedoClick,
-                         nodesDraggable,
-                         toggleNodesDraggable,
-                         toggleElementsSelectable,
-                         elementsSelectable,
-                         onAutoLayout
+   canRedo,
+   canUndo,
+   onUndoClick,
+   onRedoClick,
+   nodesDraggable,
+   toggleNodesDraggable,
+   toggleElementsSelectable,
+   elementsSelectable,
+   onAutoLayout,
+   isDuplicateDisabled,
+   onDuplicateClick,
+   onExpandClick,
+   onShrinkClick,
+   onZoomInClick,
+   onZoomOutClick,
+   zoom
 }: IProps) => {
-  const { zoom } = useViewport();
-  const { zoomIn, zoomOut, updateNodeData, getNodes, addNodes } = useReactFlow()
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
-
-  useOnSelectionChange({
-    onChange(data) {
-      setSelectedNode(data.nodes[0] || null)
-    }
-  })
-
-  const onExpandClick = () => {
-    const nodes = getNodes()
-    nodes.map((node) => {
-      updateNodeData(node.id, { isExpanded: true })
-    })
-  }
-
-  const onShrinkClick = () => {
-    const nodes = getNodes()
-    nodes.map((node) => {
-      updateNodeData(node.id, { isExpanded: false })
-    })
-  }
-
-  const onDuplicateClick = () => {
-    addNodes({
-      ...(selectedNode as Node),
-      id: `${selectedNode!.id}-copy`,
-      position: {
-        x: selectedNode!.position.x + 75,
-        y: selectedNode!.position.y + 75,
-      }})
-
-    setSelectedNode(null)
-
-    toast.success("Node duplicated", {position: "top-center"})
-  }
 
   const placeholderAction = () => {
     alert("This feature is not implemented yet")
@@ -105,7 +79,7 @@ const CanvasEditorMenubar = ({
             variant="ghost"
             size="sm"
             title="Duplicate"
-            disabled={!selectedNode}
+            disabled={isDuplicateDisabled}
             onClick={onDuplicateClick}
           >
             <Copy />
@@ -165,7 +139,7 @@ const CanvasEditorMenubar = ({
             variant="ghost"
             size="sm"
             title="Zoom In"
-            onClick={() => zoomIn({ duration: 300 })}
+            onClick={onZoomInClick}
           >
             <ZoomIn />
           </Button>
@@ -176,7 +150,7 @@ const CanvasEditorMenubar = ({
             variant="ghost"
             size="sm"
             title="Zoom Out"
-            onClick={() => zoomOut({ duration: 300 })}
+            onClick={onZoomOutClick}
           >
             <ZoomOut />
           </Button>
